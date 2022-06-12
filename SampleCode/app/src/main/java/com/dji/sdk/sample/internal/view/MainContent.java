@@ -473,12 +473,9 @@ public class MainContent extends RelativeLayout {
         // Request for missing permissions
         if (missingPermission.isEmpty()) {
             startSDKRegistration();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions((Activity) mContext,
-                    missingPermission.toArray(new String[missingPermission.size()]),
-                    REQUEST_PERMISSION_CODE);
+        } else {
+            ActivityCompat.requestPermissions((Activity) mContext, missingPermission.toArray(new String[0]), REQUEST_PERMISSION_CODE);
         }
-
     }
 
     private void startSDKRegistration() {
@@ -491,12 +488,12 @@ public class MainContent extends RelativeLayout {
                     //method before the registerAppForLDM() method
                     if (mCheckboxFirmware.isChecked()) {
                         DJISDKManager.getInstance().getLDMManager().setModuleNetworkServiceEnabled(new LDMModule.Builder().moduleType(
-                            LDMModuleType.FIRMWARE_UPGRADE).enabled(true).build());
+                                LDMModuleType.FIRMWARE_UPGRADE).enabled(true).build());
                     } else {
                         DJISDKManager.getInstance().getLDMManager().setModuleNetworkServiceEnabled(new LDMModule.Builder().moduleType(
-                            LDMModuleType.FIRMWARE_UPGRADE).enabled(false).build());
+                                LDMModuleType.FIRMWARE_UPGRADE).enabled(false).build());
                     }
-                    if(isregisterForLDM) {
+                    if (isregisterForLDM) {
                         DJISDKManager.getInstance().registerAppForLDM(mContext.getApplicationContext(), new DJISDKManager.SDKManagerCallback() {
                             @Override
                             public void onRegister(DJIError djiError) {
@@ -511,11 +508,13 @@ public class MainContent extends RelativeLayout {
                                 Timber.v(djiError.getDescription());
                                 hideProcess();
                             }
+
                             @Override
                             public void onProductDisconnect() {
                                 Timber.d("onProductDisconnect");
                                 notifyStatusChange();
                             }
+
                             @Override
                             public void onProductConnect(BaseProduct baseProduct) {
                                 Timber.d(String.format("onProductConnect newProduct:%s", baseProduct));
@@ -556,9 +555,9 @@ public class MainContent extends RelativeLayout {
                                 }
                                 lastProcess = process;
                                 showProgress(process);
-                                if (process % 25 == 0){
+                                if (process % 25 == 0) {
                                     ToastUtils.setResultToToast("DB load process : " + process);
-                                }else if (process == 0){
+                                } else if (process == 0) {
                                     ToastUtils.setResultToToast("DB load begin");
                                 }
                             }
@@ -579,11 +578,13 @@ public class MainContent extends RelativeLayout {
                                 Timber.v(djiError.getDescription());
                                 hideProcess();
                             }
+
                             @Override
                             public void onProductDisconnect() {
                                 Timber.d("onProductDisconnect");
                                 notifyStatusChange();
                             }
+
                             @Override
                             public void onProductConnect(BaseProduct baseProduct) {
                                 Timber.d("onProductConnect newProduct:%s", baseProduct);
@@ -624,9 +625,9 @@ public class MainContent extends RelativeLayout {
                                 }
                                 lastProcess = process;
                                 showProgress(process);
-                                if (process % 25 == 0){
+                                if (process % 25 == 0) {
                                     ToastUtils.setResultToToast("DB load process : " + process);
-                                }else if (process == 0){
+                                } else if (process == 0) {
                                     ToastUtils.setResultToToast("DB load begin");
                                 }
                             }
@@ -635,6 +636,8 @@ public class MainContent extends RelativeLayout {
                     }
                 }
             });
+        } else {
+            ToastUtils.showToast("Register already in progress");
         }
     }
 
