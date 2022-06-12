@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,10 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private ObjectAnimator pushOutAnimator;
     private ObjectAnimator popInAnimator;
     private LayoutTransition popOutTransition;
-    private ProgressBar progressBar;
     private Stack<ViewWrapper> stack;
     private TextView titleTextView;
-    private SearchView searchView;
     private MenuItem searchViewItem;
     private MenuItem hintItem;
 
@@ -76,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchViewItem = menu.findItem(R.id.action_search);
         hintItem = menu.findItem(R.id.action_hint);
-        searchView = (SearchView) searchViewItem.getActionView();
+        SearchView searchView = (SearchView) searchViewItem.getActionView();
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
