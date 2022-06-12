@@ -1,6 +1,7 @@
 package com.dji.sdk.sample.internal.view;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import dji.common.error.DJIError;
@@ -80,6 +82,7 @@ public class MainContent extends RelativeLayout {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, // Log files
             Manifest.permission.BLUETOOTH, // Bluetooth connected products
             Manifest.permission.BLUETOOTH_ADMIN, // Bluetooth connected products
+            Manifest.permission.BLUETOOTH_SCAN, // Bluetooth connected products
             Manifest.permission.READ_EXTERNAL_STORAGE, // Log files
             Manifest.permission.READ_PHONE_STATE, // Device UUID accessed upon registration
             Manifest.permission.RECORD_AUDIO // Speaker accessory
@@ -264,22 +267,13 @@ public class MainContent extends RelativeLayout {
                             //connected = DJISampleApplication.getBluetoothConnectStatus();
                             connector = DJISampleApplication.getBluetoothProductConnector();
 
-                            if (connector != null) {
-                                mBtnBluetooth.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mBtnBluetooth.setEnabled(true);
-                                    }
-                                });
-                                return;
-                            } else if ((System.currentTimeMillis() - currentTime) >= 5000) {
-                                DialogUtils.showDialog(getContext(),
-                                                       "Fetch Connector failed, reboot if you want to connect the Bluetooth");
-                                return;
-                            } else if (connector == null) {
-                                sendDelayMsg(0, MSG_UPDATE_BLUETOOTH_CONNECTOR);
-                            }
-                            break;
+                            mBtnBluetooth.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBtnBluetooth.setEnabled(true);
+                                }
+                            });
+                            return;
                         case MSG_INFORM_ACTIVATION:
                             loginToActivationIfNeeded();
                             break;
@@ -308,11 +302,7 @@ public class MainContent extends RelativeLayout {
             removeAppActivationListenerIfNeeded();
             mHandler.removeCallbacksAndMessages(null);
             mHandlerUI.removeCallbacksAndMessages(null);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                mHandlerThread.quitSafely();
-            } else {
-                mHandlerThread.quit();
-            }
+            mHandlerThread.quitSafely();
             mHandlerUI = null;
             mHandler = null;
         }

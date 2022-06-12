@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
 import com.dji.sdk.sample.R;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
 import com.dji.sdk.sample.internal.utils.ToastUtils;
@@ -23,7 +26,7 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
 
     private Spinner mSpinnerSelection;
     private TextView mTextDevicesInformation;
-    private final List<String> strDevicesList = new ArrayList<String>();
+    private final List<String> strDevicesList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private BluetoothProductConnector connector = null;
     private List<BluetoothDevice> devicesList = null;
@@ -31,7 +34,7 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
         new BluetoothProductConnector.BluetoothDevicesListCallback() {
 
             @Override
-            public void onUpdate(List<BluetoothDevice> list) {
+            public void onUpdate(@NonNull List<BluetoothDevice> list) {
                 if (devicesList == null) {
                     devicesList = list;
                     updateTextTV(list);
@@ -74,13 +77,8 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
         mBtnConnect.setOnClickListener(this);
 
         connector = DJISampleApplication.getBluetoothProductConnector();
-        if (connector == null) {
-            ToastUtils.setResultToToast("connect is null!");
-            return;
-        } else {
-            connector.setBluetoothDevicesListCallback(this.bluetoothProductCallback);
-        }
-        adapter = new ArrayAdapter<String>(getContext(), R.layout.simple_list_item, strDevicesList);
+        connector.setBluetoothDevicesListCallback(this.bluetoothProductCallback);
+        adapter = new ArrayAdapter<>(getContext(), R.layout.simple_list_item, strDevicesList);
         mSpinnerSelection.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -157,7 +155,7 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
     }
 
     private static void addLineToSB(StringBuilder sb, String name, Object value) {
-        sb.append(name + ": ").
+        sb.append(name).append(": ").
               append(value == null ? "" : value + "").
               append("\n");
     }
@@ -182,13 +180,11 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
         if (devices == null) {
             return;
         }
-        if (strDevicesList != null) {
-            strDevicesList.clear();
-            strDevicesList.add("Select Devices");
+        strDevicesList.clear();
+        strDevicesList.add("Select Devices");
 
-            for (int i = 0; i < devices.size(); i++) {
-                strDevicesList.add(devices.get(i).getName());
-            }
+        for (int i = 0; i < devices.size(); i++) {
+            strDevicesList.add(devices.get(i).getName());
         }
 
         post(new Runnable() {
