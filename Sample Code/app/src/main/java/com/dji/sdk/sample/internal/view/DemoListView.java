@@ -210,7 +210,7 @@ public class DemoListView extends FrameLayout {
         expandableListView = (ExpandableListView) view.findViewById(R.id.expandable_list);
         listAdapter = new ExpandableListAdapter(context, builder.build());
         expandableListView.setAdapter(listAdapter);
-        DJISampleApplication.getEventBus().register(this);
+        DJISampleApplication.Companion.getEventBus().register(this);
         expandAllGroupIfNeeded();
     }
 

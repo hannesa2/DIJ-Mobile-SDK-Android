@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
 
+import timber.log.Timber;
+
 /**
  * Created by DJI on 2/28/17.
  */
@@ -36,7 +38,7 @@ public class ToastUtils {
     private static void showMessage(Pair<TextView, String> msg) {
         if (msg != null) {
             if (msg.first == null) {
-                Toast.makeText(DJISampleApplication.getInstance(), "tv is null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DJISampleApplication.Companion.getInstance(), "tv is null", Toast.LENGTH_SHORT).show();
             } else {
                 msg.first.setText(msg.second);
             }
@@ -44,20 +46,22 @@ public class ToastUtils {
     }
 
     public static void showToast(String msg) {
-        Toast.makeText(DJISampleApplication.getInstance(), msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(DJISampleApplication.Companion.getInstance(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    public static void setResultToToast(final String string) {
+    public static void setResultToToast(final String message) {
+        Timber.d(message);
         Message msg = new Message();
         msg.what = MESSAGE_TOAST;
-        msg.obj = string;
+        msg.obj = message;
         mUIHandler.sendMessage(msg);
     }
 
-    public static void setResultToText(final TextView tv, final String s) {
+    public static void setResultToText(final TextView tv, final String message) {
+        Timber.d(message);
         Message msg = new Message();
         msg.what = MESSAGE_UPDATE;
-        msg.obj = new Pair<>(tv, s);
+        msg.obj = new Pair<>(tv, message);
         mUIHandler.sendMessage(msg);
     }
 }

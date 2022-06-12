@@ -98,7 +98,7 @@ public class AudioFileListManagerView extends LinearLayout implements View.OnCli
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
         createProgressDialog();
         initSpeakerCallback();
     }
@@ -121,7 +121,7 @@ public class AudioFileListManagerView extends LinearLayout implements View.OnCli
         if (audioMediaFiles != null) {
             audioMediaFiles.clear();
         }
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
     }
 
     private void initUI(Context context) {

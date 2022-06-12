@@ -89,8 +89,7 @@ class MultipleLensCameraView(context: Context) : LinearLayout(context), View.OnC
             ToastUtils.setResultToText(videoStreamSourceTitle, videoStreamsSourceText)
         }
         ToastUtils.setResultToText(primaryVideoFeedTitle, newText)
-        DJISampleApplication.getProductInstance()
-                .cameras?.get(0)?.setCameraVideoStreamSourceCallback(videoStreamSourceCallback)
+        DJISampleApplication.productInstance?.cameras?.get(0)?.setCameraVideoStreamSourceCallback(videoStreamSourceCallback)
 
         laserMeasureInformationCallback = LaserMeasureInformation.Callback {
             val laserMeasureInformationText = "Laser Information:\n $it"
@@ -98,8 +97,7 @@ class MultipleLensCameraView(context: Context) : LinearLayout(context), View.OnC
         }
         //Laser Measure Information for each lens is different.
         //We only set the listener for the lens at index 0.
-        DJISampleApplication.getProductInstance()
-                .cameras?.get(0)?.getLens(0)?.setLaserMeasureInformationCallback(laserMeasureInformationCallback)
+        DJISampleApplication.productInstance?.cameras?.get(0)?.getLens(0)?.setLaserMeasureInformationCallback(laserMeasureInformationCallback)
     }
 
     override fun onClick(v: View?) {
@@ -160,7 +158,7 @@ class MultipleLensCameraView(context: Context) : LinearLayout(context), View.OnC
                     }
 
                     override fun onFailure(error: DJIError) {
-                        ViewHelper.showToast(context as Activity?, "Get Hybrid Zoom Spec failed: ${error?.description}")
+                        ViewHelper.showToast(context as Activity?, "Get Hybrid Zoom Spec failed: ${error.description}")
                     }
                 })
             }
@@ -234,21 +232,19 @@ class MultipleLensCameraView(context: Context) : LinearLayout(context), View.OnC
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        DJISampleApplication.getEventBus().post(RequestStartFullScreenEvent())
+        DJISampleApplication.Companion.getEventBus().post(RequestStartFullScreenEvent())
     }
 
     override fun onDetachedFromWindow() {
-        DJISampleApplication.getEventBus().post(RequestEndFullScreenEvent())
+        DJISampleApplication.Companion.getEventBus().post(RequestEndFullScreenEvent())
         tearDownListeners()
         super.onDetachedFromWindow()
     }
 
     private fun tearDownListeners() {
         VideoFeeder.getInstance().removePhysicalSourceListener(sourceListener)
-        DJISampleApplication.getProductInstance()
-                .cameras?.get(0)?.setCameraVideoStreamSourceCallback(null)
-        DJISampleApplication.getProductInstance()
-                .cameras?.get(0)?.getLens(0)?.setLaserMeasureInformationCallback(null)
+        DJISampleApplication.productInstance?.cameras?.get(0)?.setCameraVideoStreamSourceCallback(null)
+        DJISampleApplication.productInstance?.cameras?.get(0)?.getLens(0)?.setLaserMeasureInformationCallback(null)
     }
 
     override fun getDescription(): Int {

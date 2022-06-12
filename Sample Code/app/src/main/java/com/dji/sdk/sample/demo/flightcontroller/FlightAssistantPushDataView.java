@@ -1,7 +1,6 @@
 package com.dji.sdk.sample.demo.flightcontroller;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -22,7 +21,7 @@ import dji.keysdk.callback.GetCallback;
 import dji.sdk.flightcontroller.FlightAssistant;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
-
+import timber.log.Timber;
 
 
 /**
@@ -98,7 +97,7 @@ public class FlightAssistantPushDataView extends BaseThreeBtnView {
 
             changeDescription(stringBuilder.toString());
         } else {
-            Log.i(DJISampleApplication.TAG, "onAttachedToWindow FC NOT Available");
+            Timber.i("onAttachedToWindow FC NOT Available");
         }
     }
 

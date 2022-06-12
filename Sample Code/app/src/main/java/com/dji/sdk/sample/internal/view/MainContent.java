@@ -62,13 +62,13 @@ import dji.sdk.sdkmanager.BluetoothProductConnector;
 import dji.sdk.sdkmanager.DJISDKInitEvent;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.sdk.useraccount.UserAccountManager;
+import timber.log.Timber;
 
 /**
  * Created by dji on 15/12/18.
  */
 public class MainContent extends RelativeLayout {
 
-    public static final String TAG = MainContent.class.getName();
     private static final String[] REQUIRED_PERMISSION_LIST = new String[] {
             Manifest.permission.VIBRATE, // Gimbal rotation
             Manifest.permission.INTERNET, // API requests
@@ -92,7 +92,7 @@ public class MainContent extends RelativeLayout {
 
         @Override
         public void onConnectivityChange(boolean isConnected) {
-            Log.d(TAG, "onComponentConnectivityChanged: " + isConnected);
+            Timber.d("onComponentConnectivityChanged: %s", isConnected);
             notifyStatusChange();
         }
     };
@@ -136,12 +136,12 @@ public class MainContent extends RelativeLayout {
         if (isInEditMode()) {
             return;
         }
-        DJISampleApplication.getEventBus().register(this);
+        DJISampleApplication.Companion.getEventBus().register(this);
         initUI();
     }
 
     private void initUI() {
-        Log.v(TAG, "initUI");
+        Timber.v("initUI");
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mTextConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
@@ -177,7 +177,7 @@ public class MainContent extends RelativeLayout {
                 if (GeneralUtils.isFastDoubleClick()) {
                     return;
                 }
-                DJISampleApplication.getEventBus().post(componentList);
+                DJISampleApplication.Companion.getEventBus().post(componentList);
             }
         });
         mBtnBluetooth.setOnClickListener(new OnClickListener() {
@@ -192,7 +192,7 @@ public class MainContent extends RelativeLayout {
                 }
                 bluetoothView =
                         new ViewWrapper(new BluetoothView(getContext()), R.string.component_listview_bluetooth);
-                DJISampleApplication.getEventBus().post(bluetoothView);
+                DJISampleApplication.Companion.getEventBus().post(bluetoothView);
             }
         });
         mBridgeModeEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -251,7 +251,7 @@ public class MainContent extends RelativeLayout {
 
     @Override
     protected void onAttachedToWindow() {
-        Log.d(TAG, "Comes into the onAttachedToWindow");
+        Timber.d("Comes into the onAttachedToWindow");
         if (!isInEditMode()) {
             refreshSDKRelativeUI();
             mHandlerThread.start();
@@ -347,7 +347,7 @@ public class MainContent extends RelativeLayout {
 
     private void refreshSDKRelativeUI() {
         mProduct = DJISampleApplication.getProductInstance();
-        Log.d(TAG, "mProduct: " + (mProduct == null ? "null" : "unnull"));
+        Timber.d("mProduct: %s", (mProduct == null ? "null" : "unnull"));
         if (null != mProduct ) {
             if (mProduct.isConnected()) {
                 mBtnOpen.setEnabled(true);
@@ -507,17 +507,17 @@ public class MainContent extends RelativeLayout {
                                 } else {
                                     ToastUtils.setResultToToast(mContext.getString(R.string.sdk_registration_message) + djiError.getDescription());
                                 }
-                                Log.v(TAG, djiError.getDescription());
+                                Timber.v(djiError.getDescription());
                                 hideProcess();
                             }
                             @Override
                             public void onProductDisconnect() {
-                                Log.d(TAG, "onProductDisconnect");
+                                Timber.d("onProductDisconnect");
                                 notifyStatusChange();
                             }
                             @Override
                             public void onProductConnect(BaseProduct baseProduct) {
-                                Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
+                                Timber.d(String.format("onProductConnect newProduct:%s", baseProduct));
                                 notifyStatusChange();
                             }
 
@@ -538,7 +538,7 @@ public class MainContent extends RelativeLayout {
                                         showDBVersion();
                                     }
                                 }
-                                Log.d(TAG,
+                                Timber.d(
                                         String.format("onComponentChange key:%s, oldComponent:%s, newComponent:%s",
                                                 componentKey,
                                                 oldComponent,
@@ -579,17 +579,17 @@ public class MainContent extends RelativeLayout {
                                 } else {
                                     ToastUtils.setResultToToast(mContext.getString(R.string.sdk_registration_message) + djiError.getDescription());
                                 }
-                                Log.v(TAG, djiError.getDescription());
+                                Timber.v(djiError.getDescription());
                                 hideProcess();
                             }
                             @Override
                             public void onProductDisconnect() {
-                                Log.d(TAG, "onProductDisconnect");
+                                Timber.d("onProductDisconnect");
                                 notifyStatusChange();
                             }
                             @Override
                             public void onProductConnect(BaseProduct baseProduct) {
-                                Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
+                                Timber.d("onProductConnect newProduct:%s", baseProduct);
                                 notifyStatusChange();
                             }
 
@@ -610,7 +610,7 @@ public class MainContent extends RelativeLayout {
                                         showDBVersion();
                                     }
                                 }
-                                Log.d(TAG,
+                                Timber.d(
                                         String.format("onComponentChange key:%s, oldComponent:%s, newComponent:%s",
                                                 componentKey,
                                                 oldComponent,
@@ -686,7 +686,7 @@ public class MainContent extends RelativeLayout {
     }
 
     private void notifyStatusChange() {
-        DJISampleApplication.getEventBus().post(new MainActivity.ConnectivityChangeEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.ConnectivityChangeEvent());
     }
     //endregion
 }

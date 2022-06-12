@@ -4,13 +4,13 @@ import android.app.Service;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.widget.FrameLayout;
 import com.dji.sdk.sample.R;
 import dji.sdk.camera.VideoFeeder;
 import dji.sdk.codec.DJICodecManager;
+import timber.log.Timber;
 
 /**
  * This class is designed for showing the camera video feed from the camera.
@@ -31,7 +31,7 @@ public class BaseCameraView extends FrameLayout implements TextureView.SurfaceTe
 
         layoutInflater.inflate(R.layout.view_fpv_and_camera_display, this, true);
 
-        Log.v("TAG", "Start to test");
+        Timber.v("Start to test");
 
         TextureView mVideoSurface = (TextureView) findViewById(R.id.texture_video_previewer_surface);
 

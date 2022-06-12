@@ -37,7 +37,6 @@ import dji.sdk.sdkmanager.DJISDKManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     private FrameLayout contentFrameLayout;
     private ObjectAnimator pushInAnimator;
     private ObjectAnimator pushOutAnimator;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DJISampleApplication.getEventBus().register(this);
+        DJISampleApplication.Companion.getEventBus().register(this);
         setContentView(R.layout.activity_main);
         setupActionBar();
         contentFrameLayout = findViewById(R.id.framelayout_content);
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        DJISampleApplication.getEventBus().unregister(this);
+        DJISampleApplication.Companion.getEventBus().unregister(this);
         super.onDestroy();
     }
 
@@ -84,20 +83,20 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                DJISampleApplication.getEventBus().post(new SearchQueryEvent(""));
+                DJISampleApplication.Companion.getEventBus().post(new SearchQueryEvent(""));
                 return false;
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                DJISampleApplication.getEventBus().post(new SearchQueryEvent(query));
+                DJISampleApplication.Companion.getEventBus().post(new SearchQueryEvent(query));
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                DJISampleApplication.getEventBus().post(new SearchQueryEvent(newText));
+                DJISampleApplication.Companion.getEventBus().post(new SearchQueryEvent(newText));
                 return false;
             }
         });

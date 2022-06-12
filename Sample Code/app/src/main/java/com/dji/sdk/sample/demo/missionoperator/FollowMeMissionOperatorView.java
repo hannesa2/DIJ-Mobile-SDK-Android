@@ -27,6 +27,7 @@ import dji.sdk.mission.MissionControl;
 import dji.sdk.mission.followme.FollowMeMissionOperator;
 import dji.sdk.mission.followme.FollowMeMissionOperatorListener;
 import dji.sdk.products.Aircraft;
+import timber.log.Timber;
 
 public class FollowMeMissionOperatorView extends MissionBaseView {
 
@@ -220,7 +221,7 @@ public class FollowMeMissionOperatorView extends MissionBaseView {
             @Override
             public void onExecutionUpdate(@NonNull @NotNull FollowMeMissionEvent followMeMissionEvent) {
                 // Example of Execution Listener
-                Log.d("TAG",
+                Timber.d(
                         (followMeMissionEvent.getPreviousState() == null
                                 ? ""
                                 : followMeMissionEvent.getPreviousState().getName())
