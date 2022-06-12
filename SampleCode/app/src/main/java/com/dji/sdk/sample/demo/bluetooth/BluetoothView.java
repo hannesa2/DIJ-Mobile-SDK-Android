@@ -11,7 +11,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.dji.sdk.sample.R;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
-import com.dji.sdk.sample.internal.utils.DialogUtils;
 import com.dji.sdk.sample.internal.utils.ToastUtils;
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
@@ -24,11 +23,11 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
 
     private Spinner mSpinnerSelection;
     private TextView mTextDevicesInformation;
-    private List<String> strDevicesList = new ArrayList<String>();
+    private final List<String> strDevicesList = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
     private BluetoothProductConnector connector = null;
     private List<BluetoothDevice> devicesList = null;
-    private BluetoothProductConnector.BluetoothDevicesListCallback bluetoothProductCallback =
+    private final BluetoothProductConnector.BluetoothDevicesListCallback bluetoothProductCallback =
         new BluetoothProductConnector.BluetoothDevicesListCallback() {
 
             @Override
@@ -60,17 +59,16 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
 
     }
 
-
     private void initUI(Context context) {
         setOrientation(VERTICAL);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
 
         layoutInflater.inflate(R.layout.content_bluetooth, this, true);
-        Button mBtnSearchBluetooth = (Button) findViewById(R.id.btn_SearchBluetooth);
-        mSpinnerSelection = (Spinner) findViewById(R.id.spin_Connect);
-        Button mBtnDisconnect = (Button) findViewById(R.id.btn_Disconnect);
-        Button mBtnConnect = (Button) findViewById(R.id.btn_Connect);
-        mTextDevicesInformation = (TextView) findViewById(R.id.text_DevicesInformation);
+        Button mBtnSearchBluetooth = findViewById(R.id.btn_SearchBluetooth);
+        mSpinnerSelection = findViewById(R.id.spin_Connect);
+        Button mBtnDisconnect = findViewById(R.id.btn_Disconnect);
+        Button mBtnConnect = findViewById(R.id.btn_Connect);
+        mTextDevicesInformation = findViewById(R.id.text_DevicesInformation);
         mBtnSearchBluetooth.setOnClickListener(this);
         mBtnDisconnect.setOnClickListener(this);
         mBtnConnect.setOnClickListener(this);

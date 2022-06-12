@@ -43,6 +43,7 @@ import dji.sdk.mission.MissionControl;
 import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
 import dji.sdk.products.Aircraft;
+import timber.log.Timber;
 
 import static dji.keysdk.FlightControllerKey.HOME_LOCATION_LATITUDE;
 import static dji.keysdk.FlightControllerKey.HOME_LOCATION_LONGITUDE;
@@ -339,7 +340,7 @@ public class WaypointMissionOperatorView extends MissionBaseView {
             @Override
             public void onExecutionUpdate(@NonNull WaypointMissionExecutionEvent waypointMissionExecutionEvent) {
                 // Example of Execution Listener
-                Log.d("TAG",
+                Timber.d(
                         (waypointMissionExecutionEvent.getPreviousState() == null
                                 ? ""
                                 : waypointMissionExecutionEvent.getPreviousState().getName())
@@ -364,7 +365,7 @@ public class WaypointMissionOperatorView extends MissionBaseView {
             }
         };
 
-        if (waypointMissionOperator != null && listener != null) {
+        if (waypointMissionOperator != null) {
             // Example of adding listeners
             waypointMissionOperator.addListener(listener);
         }

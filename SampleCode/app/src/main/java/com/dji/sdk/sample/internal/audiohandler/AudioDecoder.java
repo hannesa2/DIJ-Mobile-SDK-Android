@@ -4,17 +4,16 @@ import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.os.Build;
-import android.util.Log;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import timber.log.Timber;
 
 /**
  * A class for extracting the PCM data from the compressed file.
  */
 public class AudioDecoder {
 
-    private static final String TAG = "AudioDecoder";
     private MediaCodec mediaDecoder;
     private MediaExtractor mediaExtractor;
     private ByteBuffer[] decodeInputBuffers;
@@ -61,7 +60,7 @@ public class AudioDecoder {
         }
 
         if (mediaDecoder == null) {
-            Log.e(TAG, "create mediaDecoder failed");
+            Timber.e("create mediaDecoder failed");
             return;
         }
         //Start mediaCodec, waiting the input buffers

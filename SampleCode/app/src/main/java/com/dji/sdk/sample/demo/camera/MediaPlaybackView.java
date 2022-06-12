@@ -38,10 +38,10 @@ import dji.common.util.CommonCallbacks;
 import dji.sdk.base.BaseProduct;
 import dji.sdk.media.MediaFile;
 import dji.sdk.media.MediaManager;
+import timber.log.Timber;
 
 public class MediaPlaybackView extends LinearLayout
         implements MediaManager.VideoPlaybackStateListener, PresentableView {
-    private static final String TAG = MediaPlaybackView.class.getName();
     private final int SHOW_TOAST = 1;
     private final int SHOW_PROGRESS_DIALOG = 2;
     private final int HIDE_PROGRESS_DIALOG = 3;
@@ -137,7 +137,7 @@ public class MediaPlaybackView extends LinearLayout
                     if (djiError == null) {
 
                         List<MediaFile> medias = mediaManager.getSDCardFileListSnapshot();
-                        Log.d(TAG, "fetchMediaList onSuccess");
+                        Timber.d("fetchMediaList onSuccess");
                         handler.sendMessage(handler.obtainMessage(HIDE_PROGRESS_DIALOG, null));
                         if (DJIMediaList != null) {
                             DJIMediaList.clear();
@@ -186,7 +186,7 @@ public class MediaPlaybackView extends LinearLayout
                         if (null != error) {
                             handler.sendMessage(handler.obtainMessage(SHOW_TOAST, error.getDescription()));
                         } else {
-                            Log.e(TAG, "Resume Video Success");
+                            Timber.e("Resume Video Success");
                         }
                     }
                 });
@@ -202,7 +202,7 @@ public class MediaPlaybackView extends LinearLayout
                         if (null != error) {
                             handler.sendMessage(handler.obtainMessage(SHOW_TOAST, error.getDescription()));
                         } else {
-                            Log.e(TAG, "Pause Video Success");
+                            Timber.e("Pause Video Success");
                         }
                     }
                 });
@@ -218,7 +218,7 @@ public class MediaPlaybackView extends LinearLayout
                         if (null != error) {
                             handler.sendMessage(handler.obtainMessage(SHOW_TOAST, error.getDescription()));
                         } else {
-                            Log.e(TAG, "Stop Video Success");
+                            Timber.e("Stop Video Success");
                         }
                     }
                 });
@@ -308,7 +308,7 @@ public class MediaPlaybackView extends LinearLayout
 
                 SettingsDefinitions.CameraMode mode = SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD;
 
-                Log.e(TAG, "Media Test set Camera Mode " + mode);
+                Timber.e("Media Test set Camera Mode " + mode);
                 DJISampleApplication.getProductInstance()
                         .getCamera()
                         .setMode(mode, new CommonCallbacks.CompletionCallback() {
@@ -316,12 +316,12 @@ public class MediaPlaybackView extends LinearLayout
                             public void onResult(DJIError error) {
 
                                 if (error == null) {
-                                    Log.e(TAG, "Media Test set Camera Mode success");
+                                    Timber.e("Media Test set Camera Mode success");
                                     handler.sendMessage(handler.obtainMessage(SHOW_PROGRESS_DIALOG, null));
                                     handler.sendMessageDelayed(handler.obtainMessage(FETCH_FILE_LIST, null),
                                             2000);
                                 } else {
-                                    Log.e(TAG, "Media Test set Camera Mode failure");
+                                    Timber.e("Media Test set Camera Mode failure");
                                     handler.sendMessage(handler.obtainMessage(SHOW_TOAST,
                                             error.getDescription()));
                                 }
@@ -353,13 +353,13 @@ public class MediaPlaybackView extends LinearLayout
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
         isDialogAllowable = true;
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
         try {
             DJISampleApplication.getProductInstance()
                     .getCamera()
@@ -429,7 +429,7 @@ public class MediaPlaybackView extends LinearLayout
             @Override
             public void run() {
                 if (tv_playbackInfo == null) {
-                    Log.e(TAG, "tv_playbackInfo = null");
+                    Timber.e("tv_playbackInfo = null");
                 } else {
                     tv_playbackInfo.setText(str);
                 }
@@ -488,7 +488,7 @@ public class MediaPlaybackView extends LinearLayout
                                             handler.sendMessage(handler.obtainMessage(SHOW_TOAST,
                                                     error.getDescription()));
                                         } else {
-                                            Log.e(TAG, "Play Video");
+                                            Timber.e("Play Video");
                                         }
                                     }
                                 });

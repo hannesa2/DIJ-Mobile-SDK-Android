@@ -627,12 +627,12 @@ public class VideoFeederView extends LinearLayout
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
         tearDownListeners();
         super.onDetachedFromWindow();
     }

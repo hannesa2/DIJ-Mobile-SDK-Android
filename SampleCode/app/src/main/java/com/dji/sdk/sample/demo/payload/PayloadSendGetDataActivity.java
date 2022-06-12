@@ -28,13 +28,13 @@ import java.util.concurrent.TimeUnit;
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.payload.Payload;
+import timber.log.Timber;
 
 /**
  * Created by Michael on 17/11/6.
  */
 
 public class PayloadSendGetDataActivity extends AppCompatActivity implements View.OnClickListener{
-    private static final String TAG = "PayloadSendGetData";
     private TextView receivedDataView;
     private TextView payloadNameView;
     private TextView sendTotal;
@@ -109,7 +109,7 @@ public class PayloadSendGetDataActivity extends AppCompatActivity implements Vie
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.e(TAG, "receiving data size:" + bytes.length);
+                                Timber.e("receiving data size:" + bytes.length);
                                 String str = ViewHelper.getString(bytes);
                                 receiveSizeTotal = bytes.length + receiveSizeTotal;
                                 receiveTotal.setText(String.valueOf(receiveSizeTotal));
@@ -172,7 +172,7 @@ public class PayloadSendGetDataActivity extends AppCompatActivity implements Vie
 
     private void sendDataToPayload() {
         String sendingDataStr = sendDataEditView.getText().toString();
-        Log.e(TAG, "sending:" + sendingDataStr);
+        Timber.e("sending:%s", sendingDataStr);
         final byte[] data = ViewHelper.getBytes(sendingDataStr);
         if(ModuleVerificationUtil.isPayloadAvailable() && null != payload) {
             payload.sendDataToPayload(data, new CommonCallbacks.CompletionCallback() {

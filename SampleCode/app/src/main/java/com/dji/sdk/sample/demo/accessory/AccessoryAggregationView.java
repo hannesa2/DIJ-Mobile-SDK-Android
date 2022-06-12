@@ -115,7 +115,7 @@ public class AccessoryAggregationView extends LinearLayout implements View.OnCli
 
     @Subscribe
     public void onConnectivityChange(MainActivity.ConnectivityChangeEvent event) {
-        if (!DJISampleApplication.isAircraftConnected()) {
+        if (!DJISampleApplication.Companion.isAircraftConnected()) {
             destroyAccessoryAggregationCallback();
             return;
         }
