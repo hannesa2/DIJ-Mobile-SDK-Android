@@ -8,14 +8,14 @@ repositories {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.dji.sdk.sample"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 32
         multiDexEnabled true
         versionCode 1
         ndk {
