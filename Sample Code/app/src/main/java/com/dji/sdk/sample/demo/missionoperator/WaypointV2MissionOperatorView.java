@@ -85,7 +85,6 @@ public class WaypointV2MissionOperatorView extends MissionBaseView {
     private static final double ONE_METER_OFFSET = 0.00000899322;
     private static final double HORIZONTAL_DISTANCE = 30;
     private static final double VERTICAL_DISTANCE = 30;
-    private static final String TAG = WaypointV2MissionOperatorView.class.getSimpleName();
     private FlightController flightController = null;
 
     private DJISDKManager djisdkManager = DJISDKManager.getInstance();

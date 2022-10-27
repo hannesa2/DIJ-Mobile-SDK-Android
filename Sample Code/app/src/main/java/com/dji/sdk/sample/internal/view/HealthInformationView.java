@@ -20,7 +20,6 @@ import dji.sdk.base.DJIDiagnostics;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class HealthInformationView extends FrameLayout implements View.OnClickListener, PresentableView, DJIDiagnostics.DiagnosticsInformationCallback {
-    private static final String TAG = HealthInformationView.class.getSimpleName();
     private TextView logTv;
     private TextView otherLogTv;
     private boolean isSupportHMS;

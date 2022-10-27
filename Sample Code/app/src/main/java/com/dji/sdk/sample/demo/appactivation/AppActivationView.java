@@ -1,7 +1,6 @@
 package com.dji.sdk.sample.demo.appactivation;
 
 import android.content.Context;
-import android.util.Log;
 import com.dji.sdk.sample.R;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
 import com.dji.sdk.sample.internal.utils.ModuleVerificationUtil;
@@ -17,13 +16,13 @@ import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 import dji.sdk.realname.AppActivationManager;
 import dji.sdk.sdkmanager.DJISDKManager;
+import timber.log.Timber;
 
 /**
  * Class for determining whether the App is Activated.
  */
 public class AppActivationView extends BaseAppActivationView {
 
-    private static final String TAG = AppActivationView.class.getSimpleName();
     private AppActivationManager appActivationManager= DJISDKManager.getInstance().getAppActivationManager();
     private AppActivationStateListener activationStatelistener;
     private AircraftBindingStateListener bindingStateListener;
@@ -81,7 +80,7 @@ public class AppActivationView extends BaseAppActivationView {
                 });
             }
         } else {
-            Log.i(DJISampleApplication.TAG, "onAttachedToWindow FC NOT Available");
+            Timber.i("onAttachedToWindow FC NOT Available");
         }
 
     }

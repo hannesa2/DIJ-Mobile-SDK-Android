@@ -9,9 +9,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
 import com.dji.sdk.sample.R;
 import com.dji.sdk.sample.internal.controller.DJISampleApplication;
-import com.dji.sdk.sample.internal.utils.DialogUtils;
 import com.dji.sdk.sample.internal.utils.ToastUtils;
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
@@ -24,15 +26,15 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
 
     private Spinner mSpinnerSelection;
     private TextView mTextDevicesInformation;
-    private List<String> strDevicesList = new ArrayList<String>();
+    private final List<String> strDevicesList = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     private BluetoothProductConnector connector = null;
     private List<BluetoothDevice> devicesList = null;
-    private BluetoothProductConnector.BluetoothDevicesListCallback bluetoothProductCallback =
+    private final BluetoothProductConnector.BluetoothDevicesListCallback bluetoothProductCallback =
         new BluetoothProductConnector.BluetoothDevicesListCallback() {
 
             @Override
-            public void onUpdate(List<BluetoothDevice> list) {
+            public void onUpdate(@NonNull List<BluetoothDevice> list) {
                 if (devicesList == null) {
                     devicesList = list;
                     updateTextTV(list);
@@ -60,29 +62,23 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
 
     }
 
-
     private void initUI(Context context) {
         setOrientation(VERTICAL);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
 
         layoutInflater.inflate(R.layout.content_bluetooth, this, true);
-        Button mBtnSearchBluetooth = (Button) findViewById(R.id.btn_SearchBluetooth);
-        mSpinnerSelection = (Spinner) findViewById(R.id.spin_Connect);
-        Button mBtnDisconnect = (Button) findViewById(R.id.btn_Disconnect);
-        Button mBtnConnect = (Button) findViewById(R.id.btn_Connect);
-        mTextDevicesInformation = (TextView) findViewById(R.id.text_DevicesInformation);
+        Button mBtnSearchBluetooth = findViewById(R.id.btn_SearchBluetooth);
+        mSpinnerSelection = findViewById(R.id.spin_Connect);
+        Button mBtnDisconnect = findViewById(R.id.btn_Disconnect);
+        Button mBtnConnect = findViewById(R.id.btn_Connect);
+        mTextDevicesInformation = findViewById(R.id.text_DevicesInformation);
         mBtnSearchBluetooth.setOnClickListener(this);
         mBtnDisconnect.setOnClickListener(this);
         mBtnConnect.setOnClickListener(this);
 
         connector = DJISampleApplication.getBluetoothProductConnector();
-        if (connector == null) {
-            ToastUtils.setResultToToast("connect is null!");
-            return;
-        } else {
-            connector.setBluetoothDevicesListCallback(this.bluetoothProductCallback);
-        }
-        adapter = new ArrayAdapter<String>(getContext(), R.layout.simple_list_item, strDevicesList);
+        connector.setBluetoothDevicesListCallback(this.bluetoothProductCallback);
+        adapter = new ArrayAdapter<>(getContext(), R.layout.simple_list_item, strDevicesList);
         mSpinnerSelection.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -159,7 +155,7 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
     }
 
     private static void addLineToSB(StringBuilder sb, String name, Object value) {
-        sb.append(name + ": ").
+        sb.append(name).append(": ").
               append(value == null ? "" : value + "").
               append("\n");
     }
@@ -184,13 +180,11 @@ public class BluetoothView extends LinearLayout implements View.OnClickListener 
         if (devices == null) {
             return;
         }
-        if (strDevicesList != null) {
-            strDevicesList.clear();
-            strDevicesList.add("Select Devices");
+        strDevicesList.clear();
+        strDevicesList.add("Select Devices");
 
-            for (int i = 0; i < devices.size(); i++) {
-                strDevicesList.add(devices.get(i).getName());
-            }
+        for (int i = 0; i < devices.size(); i++) {
+            strDevicesList.add(devices.get(i).getName());
         }
 
         post(new Runnable() {

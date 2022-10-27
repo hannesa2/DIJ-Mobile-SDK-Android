@@ -65,6 +65,7 @@ import dji.sdk.media.MediaFile;
 import dji.sdk.media.MediaManager;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
+import timber.log.Timber;
 
 
 /**
@@ -237,6 +238,7 @@ public class MediaPlaybackView extends LinearLayout implements PresentableView,V
                     if (djiError == null) {
 
                         List<MediaFile> medias;
+                        Timber.d("fetchMediaList onSuccess");
                         if(storageLocation == SettingsDefinitions.StorageLocation.SDCARD)
                         {
                             medias = mediaManager.getSDCardFileListSnapshot();
@@ -407,7 +409,7 @@ public class MediaPlaybackView extends LinearLayout implements PresentableView,V
                         if (null != error) {
                             handler.sendMessage(handler.obtainMessage(SHOW_TOAST, "Resume error:"+error.getDescription()));
                         } else {
-                            Log.e(TAG, "Resume Video Success");
+                            Timber.e("Resume Video Success");
                         }
                     }
                 });
@@ -419,7 +421,7 @@ public class MediaPlaybackView extends LinearLayout implements PresentableView,V
                         if (null != error) {
                             handler.sendMessage(handler.obtainMessage(SHOW_TOAST, "Pause error:"+error.getDescription()));
                         } else {
-                            Log.e(TAG, "Pause Video Success");
+                            Timber.e("Pause Video Success");
                         }
                     }
                 });
@@ -431,7 +433,7 @@ public class MediaPlaybackView extends LinearLayout implements PresentableView,V
                         if (null != error) {
                             handler.sendMessage(handler.obtainMessage(SHOW_TOAST, "Stop error:"+error.getDescription()));
                         } else {
-                            Log.e(TAG, "Stop Video Success");
+                            Timber.e("Stop Video Success");
                         }
                     }
                 });
@@ -666,14 +668,14 @@ public class MediaPlaybackView extends LinearLayout implements PresentableView,V
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
         isDialogAllowable = true;
         initDJIMedia();
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
 
         if(ModuleVerificationUtil.isProductModuleAvailable())
         {
@@ -760,7 +762,7 @@ public class MediaPlaybackView extends LinearLayout implements PresentableView,V
             @Override
             public void run() {
                 if (tv_playbackInfo == null) {
-                    Log.e(TAG, "tv_playbackInfo = null");
+                    Timber.e("tv_playbackInfo = null");
                 } else {
                     tv_playbackInfo.setText(str);
                 }
@@ -872,10 +874,11 @@ public class MediaPlaybackView extends LinearLayout implements PresentableView,V
                         handler.sendMessage(handler.obtainMessage(SHOW_TOAST,
                                 "Play error:"+djiError.getDescription()));
                     } else {
-                        Log.e(TAG, "Play Video");
-                    }
-                }
-            });
+                        Timber.e("Play Video");
+                                        }
+                                    }
+                                });
+
         }
     };
 

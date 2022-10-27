@@ -1,6 +1,7 @@
 package com.dji.sdk.sample.internal.view;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import dji.common.error.DJIError;
@@ -62,13 +64,13 @@ import dji.sdk.sdkmanager.BluetoothProductConnector;
 import dji.sdk.sdkmanager.DJISDKInitEvent;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.sdk.useraccount.UserAccountManager;
+import timber.log.Timber;
 
 /**
  * Created by dji on 15/12/18.
  */
 public class MainContent extends RelativeLayout {
 
-    public static final String TAG = MainContent.class.getName();
     private static final String[] REQUIRED_PERMISSION_LIST = new String[] {
             Manifest.permission.VIBRATE, // Gimbal rotation
             Manifest.permission.INTERNET, // API requests
@@ -80,6 +82,7 @@ public class MainContent extends RelativeLayout {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, // Log files
             Manifest.permission.BLUETOOTH, // Bluetooth connected products
             Manifest.permission.BLUETOOTH_ADMIN, // Bluetooth connected products
+            Manifest.permission.BLUETOOTH_SCAN, // Bluetooth connected products
             Manifest.permission.READ_EXTERNAL_STORAGE, // Log files
             Manifest.permission.READ_PHONE_STATE, // Device UUID accessed upon registration
             Manifest.permission.RECORD_AUDIO // Speaker accessory
@@ -92,7 +95,7 @@ public class MainContent extends RelativeLayout {
 
         @Override
         public void onConnectivityChange(boolean isConnected) {
-            Log.d(TAG, "onComponentConnectivityChanged: " + isConnected);
+            Timber.d("onComponentConnectivityChanged: %s", isConnected);
             notifyStatusChange();
         }
     };
@@ -136,12 +139,12 @@ public class MainContent extends RelativeLayout {
         if (isInEditMode()) {
             return;
         }
-        DJISampleApplication.getEventBus().register(this);
+        DJISampleApplication.Companion.getEventBus().register(this);
         initUI();
     }
 
     private void initUI() {
-        Log.v(TAG, "initUI");
+        Timber.v("initUI");
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mTextConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
@@ -177,7 +180,7 @@ public class MainContent extends RelativeLayout {
                 if (GeneralUtils.isFastDoubleClick()) {
                     return;
                 }
-                DJISampleApplication.getEventBus().post(componentList);
+                DJISampleApplication.Companion.getEventBus().post(componentList);
             }
         });
         mBtnBluetooth.setOnClickListener(new OnClickListener() {
@@ -192,7 +195,7 @@ public class MainContent extends RelativeLayout {
                 }
                 bluetoothView =
                         new ViewWrapper(new BluetoothView(getContext()), R.string.component_listview_bluetooth);
-                DJISampleApplication.getEventBus().post(bluetoothView);
+                DJISampleApplication.Companion.getEventBus().post(bluetoothView);
             }
         });
         mBridgeModeEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -251,7 +254,7 @@ public class MainContent extends RelativeLayout {
 
     @Override
     protected void onAttachedToWindow() {
-        Log.d(TAG, "Comes into the onAttachedToWindow");
+        Timber.d("Comes into the onAttachedToWindow");
         if (!isInEditMode()) {
             refreshSDKRelativeUI();
             mHandlerThread.start();
@@ -264,22 +267,13 @@ public class MainContent extends RelativeLayout {
                             //connected = DJISampleApplication.getBluetoothConnectStatus();
                             connector = DJISampleApplication.getBluetoothProductConnector();
 
-                            if (connector != null) {
-                                mBtnBluetooth.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mBtnBluetooth.setEnabled(true);
-                                    }
-                                });
-                                return;
-                            } else if ((System.currentTimeMillis() - currentTime) >= 5000) {
-                                DialogUtils.showDialog(getContext(),
-                                        "Fetch Connector failed, reboot if you want to connect the Bluetooth");
-                                return;
-                            } else if (connector == null) {
-                                sendDelayMsg(0, MSG_UPDATE_BLUETOOTH_CONNECTOR);
-                            }
-                            break;
+                            mBtnBluetooth.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBtnBluetooth.setEnabled(true);
+                                }
+                            });
+                            return;
                         case MSG_INFORM_ACTIVATION:
                             loginToActivationIfNeeded();
                             break;
@@ -308,11 +302,7 @@ public class MainContent extends RelativeLayout {
             removeAppActivationListenerIfNeeded();
             mHandler.removeCallbacksAndMessages(null);
             mHandlerUI.removeCallbacksAndMessages(null);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                mHandlerThread.quitSafely();
-            } else {
-                mHandlerThread.quit();
-            }
+            mHandlerThread.quitSafely();
             mHandlerUI = null;
             mHandler = null;
         }
@@ -347,7 +337,7 @@ public class MainContent extends RelativeLayout {
 
     private void refreshSDKRelativeUI() {
         mProduct = DJISampleApplication.getProductInstance();
-        Log.d(TAG, "mProduct: " + (mProduct == null ? "null" : "unnull"));
+        Timber.d("mProduct: %s", (mProduct == null ? "null" : "unnull"));
         if (null != mProduct ) {
             if (mProduct.isConnected()) {
                 mBtnOpen.setEnabled(true);
@@ -473,12 +463,9 @@ public class MainContent extends RelativeLayout {
         // Request for missing permissions
         if (missingPermission.isEmpty()) {
             startSDKRegistration();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions((Activity) mContext,
-                    missingPermission.toArray(new String[missingPermission.size()]),
-                    REQUEST_PERMISSION_CODE);
+        } else {
+            ActivityCompat.requestPermissions((Activity) mContext, missingPermission.toArray(new String[0]), REQUEST_PERMISSION_CODE);
         }
-
     }
 
     private void startSDKRegistration() {
@@ -496,7 +483,7 @@ public class MainContent extends RelativeLayout {
                         DJISDKManager.getInstance().getLDMManager().setModuleNetworkServiceEnabled(new LDMModule.Builder().moduleType(
                                 LDMModuleType.FIRMWARE_UPGRADE).enabled(false).build());
                     }
-                    if(isregisterForLDM) {
+                    if (isregisterForLDM) {
                         DJISDKManager.getInstance().registerAppForLDM(mContext.getApplicationContext(), new DJISDKManager.SDKManagerCallback() {
                             @Override
                             public void onRegister(DJIError djiError) {
@@ -507,17 +494,19 @@ public class MainContent extends RelativeLayout {
                                 } else {
                                     ToastUtils.setResultToToast(mContext.getString(R.string.sdk_registration_message) + djiError.getDescription());
                                 }
-                                Log.v(TAG, djiError.getDescription());
+                                Timber.v(djiError.getDescription());
                                 hideProcess();
                             }
+
                             @Override
                             public void onProductDisconnect() {
-                                Log.d(TAG, "onProductDisconnect");
+                                Timber.d("onProductDisconnect");
                                 notifyStatusChange();
                             }
+
                             @Override
                             public void onProductConnect(BaseProduct baseProduct) {
-                                Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
+                                Timber.d(String.format("onProductConnect newProduct:%s", baseProduct));
                                 notifyStatusChange();
                             }
 
@@ -538,7 +527,7 @@ public class MainContent extends RelativeLayout {
                                         showDBVersion();
                                     }
                                 }
-                                Log.d(TAG,
+                                Timber.d(
                                         String.format("onComponentChange key:%s, oldComponent:%s, newComponent:%s",
                                                 componentKey,
                                                 oldComponent,
@@ -560,9 +549,9 @@ public class MainContent extends RelativeLayout {
                                 }
                                 lastProcess = process;
                                 showProgress(process);
-                                if (process % 25 == 0){
+                                if (process % 25 == 0) {
                                     ToastUtils.setResultToToast("DB load process : " + process);
-                                }else if (process == 0){
+                                } else if (process == 0) {
                                     ToastUtils.setResultToToast("DB load begin");
                                 }
                             }
@@ -579,17 +568,19 @@ public class MainContent extends RelativeLayout {
                                 } else {
                                     ToastUtils.setResultToToast(mContext.getString(R.string.sdk_registration_message) + djiError.getDescription());
                                 }
-                                Log.v(TAG, djiError.getDescription());
+                                Timber.v(djiError.getDescription());
                                 hideProcess();
                             }
+
                             @Override
                             public void onProductDisconnect() {
-                                Log.d(TAG, "onProductDisconnect");
+                                Timber.d("onProductDisconnect");
                                 notifyStatusChange();
                             }
+
                             @Override
                             public void onProductConnect(BaseProduct baseProduct) {
-                                Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
+                                Timber.d("onProductConnect newProduct:%s", baseProduct);
                                 notifyStatusChange();
                             }
 
@@ -610,7 +601,7 @@ public class MainContent extends RelativeLayout {
                                         showDBVersion();
                                     }
                                 }
-                                Log.d(TAG,
+                                Timber.d(
                                         String.format("onComponentChange key:%s, oldComponent:%s, newComponent:%s",
                                                 componentKey,
                                                 oldComponent,
@@ -632,9 +623,9 @@ public class MainContent extends RelativeLayout {
                                 }
                                 lastProcess = process;
                                 showProgress(process);
-                                if (process % 25 == 0){
+                                if (process % 25 == 0) {
                                     ToastUtils.setResultToToast("DB load process : " + process);
-                                }else if (process == 0){
+                                } else if (process == 0) {
                                     ToastUtils.setResultToToast("DB load begin");
                                 }
                             }
@@ -643,6 +634,8 @@ public class MainContent extends RelativeLayout {
                     }
                 }
             });
+        } else {
+            ToastUtils.showToast("Register already in progress");
         }
     }
 
@@ -686,7 +679,7 @@ public class MainContent extends RelativeLayout {
     }
 
     private void notifyStatusChange() {
-        DJISampleApplication.getEventBus().post(new MainActivity.ConnectivityChangeEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.ConnectivityChangeEvent());
     }
     //endregion
 }

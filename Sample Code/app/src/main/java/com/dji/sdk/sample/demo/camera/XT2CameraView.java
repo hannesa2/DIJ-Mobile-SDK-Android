@@ -165,12 +165,12 @@ public class XT2CameraView extends LinearLayout implements View.OnClickListener,
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
         super.onDetachedFromWindow();
     }
 

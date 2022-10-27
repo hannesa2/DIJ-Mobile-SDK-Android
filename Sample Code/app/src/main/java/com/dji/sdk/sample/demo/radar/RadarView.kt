@@ -46,7 +46,7 @@ class RadarView(context: Context?) : LinearLayout(context), PresentableView, Vie
     }
 
     private fun initRadar() {
-        val product = DJISampleApplication.getProductInstance();
+        val product = DJISampleApplication.productInstance;
         if (product != null && product is Aircraft && product.radar != null) {
             mRadar = product.radar as Radar
         }

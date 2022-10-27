@@ -91,7 +91,7 @@ public class GimbalCapabilityView extends LinearLayout implements View.OnClickLi
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestStartFullScreenEvent());
         setupButtonsState();
         enablePitchExtensionIfPossible();
         if (getGimbalInstance() != null) {
@@ -104,7 +104,7 @@ public class GimbalCapabilityView extends LinearLayout implements View.OnClickLi
 
     @Override
     protected void onDetachedFromWindow() {
-        DJISampleApplication.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
+        DJISampleApplication.Companion.getEventBus().post(new MainActivity.RequestEndFullScreenEvent());
         currentGimbalId = 0;
         tearDownListeners();
         super.onDetachedFromWindow();
